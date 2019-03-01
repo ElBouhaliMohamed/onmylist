@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
+  up: async (queryInterface, Sequelize) => {
     /*
       Add altering commands here.
       Return a promise to correctly handle asynchronicity.
@@ -13,9 +13,9 @@ module.exports = {
       }], {});
     */
 
-    return queryInterface.bulkInsert('Offers', [{
+    return await queryInterface.bulkInsert('Offers', [{
       id: 1,
-      name: "Wiltmann \nSalami",
+      name: "Wiltmann Salami",
       pic_url: "https://img.rewe-static.de/REWE04_2019/4241002/22972349-13_digital-image.png?resize=200px:200px",
       price: "0,99",
       information: ["versch. Sorten,", "(100 g = 1.24)", "je 80-g-Pckg."],

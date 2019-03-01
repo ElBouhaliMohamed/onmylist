@@ -4,7 +4,13 @@ const markets = new Router();
 const models = require('../models');
 
 markets.get('/', async (ctx, next) => {
-	const allmarkets = await models.market.findAll();
+	const allmarkets = await models.market.findAll({
+		include: [
+		  {
+			model: models.offer
+		  }
+		]
+	  });
 
 	ctx.body = allmarkets;
 	await next();
