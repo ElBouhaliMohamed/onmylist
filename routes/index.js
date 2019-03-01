@@ -8,10 +8,7 @@ const categorys = require('./categorys');
 const config = require('../config/config');
 
 router.use(async function(ctx, next) {
-    console.log(ctx.headers);
-    console.log(config.api.token);
     if(ctx.headers.token === config.api.token) {
-        console.log('daqwdwq');
         await next();
     }else {
         ctx.throw(401);
