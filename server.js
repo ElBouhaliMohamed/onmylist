@@ -1,7 +1,11 @@
 const app = require('./app');
 const db = require('./models');
-require('./controllers/cron-jobs.js');
+const config = require('./config/config.json');
 
-db.sequelize.sync().then(() => {
-	app.listen(3000);
-});
+if(config.api.initDatabase) {
+	db.sequelize.sync().then(async () => {
+		app.listen(3000);
+	});
+}else {
+	app.listen(3000)
+}

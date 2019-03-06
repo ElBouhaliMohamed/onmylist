@@ -12,10 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING
       },
       GeoLocation: {
-        type: DataTypes.STRING
+        type: DataTypes.JSON
       },
       OpeningTimes: {
-        type: DataTypes.STRING
+        type: DataTypes.JSON
       }
     },
     {

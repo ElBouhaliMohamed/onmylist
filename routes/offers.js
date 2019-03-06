@@ -19,7 +19,7 @@ offers.get("/", async (ctx, next) => {
 
     // for(let offer in alloffers) {
     //   for(let categories of offer.categories) {
-    //     delete categories.OfferCategorys;
+    //     delete categories.OfferCategories;
     //   }
     // }
 

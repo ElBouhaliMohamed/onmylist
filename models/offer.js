@@ -7,14 +7,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       unit: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       price: {
         type: DataTypes.STRING,
         allowNull: false
       },
       information: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false
       },
       pic_url: {
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       volume: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       }
   }, {
     timestamps: true,
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     Offer.belongsTo(models.market);
 
     Offer.belongsToMany(models.category, {
-      through: 'OfferCategorys'
+      through: 'OfferCategories'
     });
   };
   return Offer;
