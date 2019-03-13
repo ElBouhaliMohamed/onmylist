@@ -25,7 +25,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Market.associate = function(models) {
-    Market.hasMany(models.offer);
+    Market.belongsToMany(models.offer, {
+      through: 'MarketOffers',
+      unique: false,
+      constraints: false
+    });
   };
   return Market;
 };

@@ -16,10 +16,6 @@ const urls = [
     url: "https://www.rewe.de/marktseite/duesseldorf/"
   },
   {
-    item: "REWE Bundesweit",
-    url: "https://www.rewe.de/angebote/nationale-angebote/"
-  },
-  {
     item: "REWE Lokale Angebote",
     url: "https://www.rewe.de/marktseite/duesseldorf/"
   }
@@ -61,9 +57,9 @@ function parseReweStandorte(html) {
       let maerkte = [];
 
       $("market-tile", html).each(function(i, markt) {
-        let info = $(markt).attr("market");
+        let info = JSON.parse($(markt).attr("market"));
 
-        maerkte[i] = JSON.parse(info);
+        maerkte[i] = info;
       });
 
       reweStandorte = maerkte;
@@ -104,15 +100,8 @@ async function parseReweOfferLinks() {
     let offerLinks = [];
 
     for (let markt of reweStandorte) {
-      let address =
-        markt.address.street.toLowerCase().replace(" ", "-") +
-        "-" +
-        markt.address.houseNumber.toLowerCase().replace(" ", "-");
-      let link = `https://www.rewe.de/angebote/${markt.address.city.toLowerCase()}/${
-        markt.id
-      }/rewe-${
-        markt.type.id.toLowerCase() == "rewe" ? "markt" : "city"
-      }-${address}`;
+      let address = markt.address.street.toLowerCase().replace(" ", "-") + "-" + markt.address.houseNumber.toLowerCase().replace(" ", "-");
+      let link = `https://www.rewe.de/angebote/${markt.address.city.toLowerCase()}/${markt.id}/rewe-${markt.type.id.toLowerCase() == "rewe" ? "markt" : "city"}-${address}`;
       await offerLinks.push(link);
     }
 
@@ -212,7 +201,13 @@ async function parseReweAngebote(html) {
     if (market) {
       market = await findReweMarket(market);
     } else {
-      market = "REWE Bundesweit";
+      market = {
+        name: 'REWE Bundesweit',
+        PhoneNumber: '',
+        address: 'REWE Bundesweit',
+        GeoLocation: '',
+        OpeningTimes: ''
+      };
     }
 
     $("div.card", html).each(function(i, product) {
@@ -276,10 +271,6 @@ async function parseReweAngebote(html) {
       await addOffer(angebot);
     }
 
-    fs.appendFile(`rewe.json`, JSON.stringify(angebote), function(err) {
-      if (err) throw err;
-      return angebote;
-    });
   } catch (err) {
     throw err;
   }
@@ -367,19 +358,14 @@ async function addOffer(entry) {
       });
 
     // find market
-    const foundMarket = await models.market.findOne({
-      where: { address: entry.market.address }
+
+    let foundMarket = await models.market
+    .findOrCreate({ where: { address: entry.market.address }, defaults: entry.market })
+    .spread((createdMarket, created) => {
+      return { createdMarket, created };
     });
 
-    if (!foundMarket) {
-      // create and associate market with offer
-      await foundOffer.offer.createMarket(entry.market);
-    } else {
-      if (foundOffer.created) {
-        // associate existing market with offer
-        await foundOffer.offer.setMarket(foundMarket);
-      }
-    }
+    foundOffer.offer.addMarket(foundMarket.createdMarket);
 
     // parse categories and create if not exisiting
     const categories = entry.categories;
@@ -396,7 +382,7 @@ async function addOffer(entry) {
     }
 
     // associate all the categories with the offer
-    foundOffer.offer.setCategories(createdCategories);
+    foundOffer.offer.addCategories(createdCategories);
 
     return { offer: foundOffer.offer, market: foundMarket, categories: createdCategories };
 

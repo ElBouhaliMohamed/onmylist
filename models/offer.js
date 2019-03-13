@@ -37,10 +37,16 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Offer.associate = function(models) {
-    Offer.belongsTo(models.market);
+    Offer.belongsToMany(models.market, {
+      through: 'MarketOffers',
+      unique: false,
+      constraints: false
+    });
 
     Offer.belongsToMany(models.category, {
-      through: 'OfferCategories'
+      through: 'OfferCategories',
+      unique: false,
+      constraints: false
     });
   };
   return Offer;

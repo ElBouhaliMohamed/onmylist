@@ -2,6 +2,8 @@ const Router = require("koa-router");
 const offers = new Router();
 
 const models = require("../models");
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 const Boom = require("boom");
 
 offers.get("/", async (ctx, next) => {
@@ -17,12 +19,6 @@ offers.get("/", async (ctx, next) => {
       ]
     });
 
-    // for(let offer in alloffers) {
-    //   for(let categories of offer.categories) {
-    //     delete categories.OfferCategories;
-    //   }
-    // }
-
     ctx.body = alloffers;
     await next();
   } catch (err) {
@@ -30,7 +26,7 @@ offers.get("/", async (ctx, next) => {
   }
 });
 
-offers.get("/byId/:id", async (ctx, next) => {
+offers.get("/search/byId/:id", async (ctx, next) => {
   try {
     const offer = await models.offer.findById(ctx.params.id, {
       include: [
@@ -46,6 +42,36 @@ offers.get("/byId/:id", async (ctx, next) => {
     ctx.body = offer;
     await next();
   } catch (err) {
+    ctx.throw(Boom.badRequest(err));
+  }
+});
+
+offers.get("/search/:key", async (ctx, next) => {
+  try {
+    const key = ctx.params.key.replace('_',' ');
+
+     const offers = await models.offer.findAll({
+      where: {
+        name: {
+          [Op.like]: `%${key}%`
+        }
+      },
+      include: [
+        {
+          model: models.category,
+          attributes: ['name','PictureId']
+        }
+      ],
+      attributes: ['name','unit','volume','price','information','pic_url','dueDate']
+     });
+
+     if(offers.length == 0) {
+      ctx.status = 404;
+     }
+
+     ctx.body = offers;
+     await next();
+  }catch(err) {
     ctx.throw(Boom.badRequest(err));
   }
 });
