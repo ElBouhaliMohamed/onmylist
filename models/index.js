@@ -9,6 +9,8 @@ config.define = {
     underscored: true
 }
 
+console.log(config);
+
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 const db = {};
 

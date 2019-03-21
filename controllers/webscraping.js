@@ -141,7 +141,7 @@ function findReweMarket(market) {
 
 function findCategoriesForProduct(productName) {
     try {
-      const categories = [
+      const categories = 
         {
           saft: "Getraenk",
           cola: "Getraenk",
@@ -153,7 +153,7 @@ function findCategoriesForProduct(productName) {
           steak: "Fleisch",
           knoblauch: "Getraenk"
         }
-      ];
+      ;
 
       let categoriesFound = [];
 
