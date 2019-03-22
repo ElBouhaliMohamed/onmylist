@@ -16,5 +16,8 @@ da durch wird die Datenbank mit Daten gefüllt (dauert ca. 15 Minuten)
 
 ##
 
-Zum starten des Server einfach
+Zum starten des Server mit ngrok tunnel einfach
 `npm run dev` ausführen
+
+Zum starten des Server ohne ngrok tunnel
+`npm start` ausführen
