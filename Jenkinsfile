@@ -24,4 +24,10 @@ node {
             app.push("latest")
         }
     }
+
+    stage('Run image') {
+        docker.image('mohamedelbouhali/onmylist:latest')
+    }
+
+
 }
