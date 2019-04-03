@@ -26,7 +26,7 @@ node {
     }
 
     stage('Run image') {
-        docker.image('mohamedelbouhali/onmylist:latest')
+        docker.image('mohamedelbouhali/onmylist:latest').withRun('-p 3000:3000')
     }
 
 
