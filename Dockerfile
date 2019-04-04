@@ -1,7 +1,12 @@
-FROM node:7
-WORKDIR /opt/app
-COPY package.json package-lock.json* ./
+FROM node:10-alpine
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
 RUN npm install
-COPY . /opt/app
+
+COPY . .
+
 EXPOSE 3000
-CMD ["npm","run","start"]
+
+CMD [ "npm", "start" ]
