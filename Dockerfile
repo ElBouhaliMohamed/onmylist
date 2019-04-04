@@ -1,13 +1,7 @@
-# use a node base image
-FROM node:7-onbuild
-
-# set maintainer
-LABEL maintainer "mohamed.elbouhali@web.de"
-
-# set a health check
-HEALTHCHECK --interval=5s \
-            --timeout=5s \
-            CMD curl -f http://127.0.0.1:3000 || exit 1
-
-# tell docker what port to expose
-EXPOSE 8000
+FROM node:7
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+COPY . /app
+CMD npm start
+EXPOSE 3000
